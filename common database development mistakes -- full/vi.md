@@ -133,3 +133,67 @@ Tôi đã từng thấy các cơ sở dữ liệu bị phá hủy vì điều n�
 Sử dụng các câu lệnh được chuẩn bị cũng sẽ cho bạn thống kê ý nghĩa về việc các câu truy vấn cụ thể được sử dụng với tần suất nào.
 
 Các câu lệnh được chuẩn bị cũng bảo vệ bạn tốt hơn với cách tấn công SQL injection
+
+**9. Không đủ độ chuẩn hóa**  
+
+[Chuẩn hóa cơ sở dữ liệu](https://en.wikipedia.org/wiki/Database_normalization) là một tiến trình cơ bản của việc tối ưu hóa thiết kế cơ sở dữ liệu hoặc cách bạn tổ chức tổ chức dữ liệu của bạn trong các bảng. 
+Chỉ trong tuần này, tôi đã chạy qua một vài mã nguồn mà họ đã tách mảng ra và chèn nó vào một trường đơn trong cơ sở dữ liệu. Quá trình chuẩn hóa sẽ coi là thành phần của mảng như là một dòng riêng biệt trong bẳng con. (như trong mối quan hệ một - nhiều).  
+Nó cũng được đề cập đến trong [Phương thức tốt nhất cho việc lưu trữ danh sách các ID người dùng](https://stackoverflow.com/questions/620645/best-method-for-storing-a-list-of-user-ids)  
+> Tôi đã thấy trong những hệ thông khác các danh sách được lưu trữ trong mảng tuần tự PHP  
+
+Nhưng sự thiếu sót của quá trình chuẩn hóa cũng đến từ rất nhiều hình thức.  
+Xem thêm:  
+* [Chuẩn hóa: Bao xa là đủ xa?](https://www.techrepublic.com/article/normalization-how-far-is-far-enough/)  
+* [SQL qua design: Tại sao bạn cần chuẩn hóa cơ sở dữ liệu](http://www.itprotoday.com/microsoft-sql-server/sql-design-why-you-need-database-normalization)  
+
+**10. Chuẩn hóa quá nhiều**  
+Có thể thấy rằng nó mâu thuẫn với điểm trước đó nhưng chuẩn hóa, cũng như nhiều thứ khác, cũng là một công cụ. Nó là một cách để kết thúc vào không phải là kết thúc trong chính nó. Tôi nghĩ rằng rất nhiều nhà phát triển đã quên điều đó và bắt đầu coi "ý nghĩa" như là "sự kết thúc". Đơn vị kiểm thử là một ví dụ điển hình cho điều đó.  
+Tôi đã làm việc trên một hệ thống mà có hệ thống phân cấp khổng lồ cho khách hàng mà tôi đã làm như thế này:  
+Licensee -&gt;  Dealer Group -&gt; Company -&gt; Practice -&gt; ...  
+Như thể là bạn ghép nối khoảng 11 bảng khác nhau trước khi bạn có thể lấy bất cứ dữ liệu có ý nghĩa nào. Nó là một ví dụ tốt cho việc chuẩn hóa đi quá xa.  
+Một vài điểm khác, việc chuẩn hóa một cách cẩn thận và được lưu tâm có thể mang lại hiệu suất lớn, nhưng bạn phải thật sự cẩn thận khi làm điều đó.  
+Xem thêm:  
+* [Tại sao chuẩn hóa cơ sở dữ liệu quá nhiều có thể là điều tồi tệ?](https://www.selikoff.net/2008/11/19/why-too-much-database-normalization-can-be-a-bad-thing/)  
+* [Bao nhiêu là đủ cho việc chuẩn hóa trong thiết kế cơ sở dữ liệu?](https://stackoverflow.com/questions/496508/how-far-to-take-normalization-in-database-design)  
+* [Không chuẩn hóa cơ sở dữ liệu SQL của bạn khi nào?](http://www.25hoursaday.com/weblog/CommentView.aspx?guid=cc0e740c-a828-4b9d-b244-4ee96e2fad4b)  
+* [Có thể chuẩn hóa không phải là bình thường](http://www.codinghorror.com/blog/archives/001152.html)  
+* [Nguyên nhân các cuộc tranh luận chuẩn hóa cơ sở dữ liệu trên Coding Horror](http://highscalability.com/mother-all-database-normalization-debates-coding-horror)  
+
+**11. Sử dụng tham số duy nhất**  
+Tham số duy nhất là lỗi phổ biến trong các bảng được tạo bởi hai hay nhiều khóa ngoại nơi 1 và chỉ 1 trong chúng có thể không null. **Một sai lầm lớn**. Một điều là nó trở lên khó khăn nhiều hơn để duy trì toàn vẹn dữ liệu. Sau tất cả, cũng với sự toàn vẹn các ràng buộc, không điều gì là ngăn cản hai hay nhiều khóa ngoại này được đặt (mặc dù kiểm tra ràng buộc phức tạp)  
+Theo [Hướng dẫn thực tiễn cho việc thiết kế quan hệ cơ sở dữ liệu](https://books.google.com.au/books?id=7ZAk0YiKQV0C&pg=PA110&lpg=PA110&dq=%22exclusive+arc%22+database&source=bl&ots=AyNPWsac__&sig=gBFIerXckQlVpRdd6ycI5JEgq3U&hl=en&ei=PzGzSZfrFcPVkAWWyZDZBA&sa=X&oi=book_result&ct=result)  
+> Chúng tôi đã nhấn mạnh chống lại việc xây dựng cấu trúc độc quyền bất cứ khi nào có thể, vì lý do tốt mà họ có thể khó viết mã và gây ra nhiều khó khăn về bảo trì.  
+
+**12. Không phân tích hiệu suất về các truy vấn trên toàn bộ**  
+Theo chủ nghĩa thực dụng tối cao, đặc biệt là trong thế giới cơ sở dữ liệu. Nếu bạn vẫn đang bị bám theo nguyên tắc rằng chúng đã trở nên độc đoán thì bạn thực sự đang mắc sai lầm. Lấy 1 ví dụ về các truy vấn gộp bên trên. Phiên bản gộp có vẻ nhìn "ổn" nhưng hiệu suất của nó thì tệ. Việc so sánh về hiệu suất nên kết thúc cuộc tranh luận (nhưng nó không) nhưng thêm 1 điều rằng : việc đưa quá nhiều view thông báo xấu ngay trong vị trí đầu tiên là ngu ngốc, thậm chí là nguy hiểm.  
+**13. Quá phụ thuộc vào UNION ALL và đặc biệt là cấu trúc UNION**  
+UNION trong SQL chỉ đơn thuần nối các tập dữ liệu đồng nhất, có nghĩa là chúng có cùng kiểu và số cột. Sự khác biệt giữa chúng là UNION ALL là một sự ghép nối đơn giản và nên được ưu tiên hơn bất cứ khi nào có thể trong khi một UNION ngầm sẽ làm một DISTINCT để loại bỏ các bản sao trùng lặp.  
+UNIONs, cũng như DISTINCT, có vai trò của riêng chúng. Đều có các ứng dụng hợp lệ. Nhưng nếu bạn tự tìm hiểu chúng nhiều 1 chút, đặc biệt là trong các truy vấn con, thì chúng thực sự đang làm sai.  Đó có thể là  trường hợp của cấu trúc truy vấn tệ hoặc là 1 mô hình dữ liệu thiết kế kém khiến bạn phải làm những điều này.  
+UNIONs, đặc biệt là khi sử dụng trong phép nối hoặc các truy vấn con phụ thuộc, có thể làm hỏng cơ sở dữ liệu. Cố gắng sử dụng chúng nếu có thể.  
+**14. Sử dụng điều kiện OR trong truy vấn**  
+Điều này có vẻ vô hại. Sau tất cả, AND là OK. OR có OK như vậy không? Sai rồi. Về cơ bản, một điều kiện AND hạn chế tập dữ liệu trong khi điều kiện OR phát triển nó nhưng không phải là theo một cách mà nó có thể tự tối ưu hoá. Đặc biệt khi các điều kiện OR khác nhau có thể giao nhau, do đó trình tối ưu hóa có hiệu quả để một hoạt động DISTINCT về kết quả.  
+Bad:  
+... WHERE a = 2 OR a = 5 OR a = 11  
+Better:  
+... WHERE a IN (2, 5, 11)  
+Hiện tại quá trình tối ưu hóa SQL của bạn có thể có hiệu quả từ truy vấn đầu tiên đến tiếp theo. Nhưng nó có thể không. Chỉ cần không làm điều đó.  
+**15. Không thiết kế mô hình dữ liệu để có giải pháp hiệu suất cao**  
+Đây là một điểm khó để định lượng. Nó thường được quan sát bởi hiệu ứng của nó.  Nếu bạn thấy mình đang viết các câu truy vấn cho các việc tương đối đơn giản hay các truy vấn để tìm các thông tin tương đối đơn giản nhưng không hiệu quả, thì bạn chắc chắn đang có mô hình dữ liệu tệ.  
+Bằng 1 cách nào đó, điều này tổng kết tất cả các điều trước đó nhưng nó có thêm 1 cảnh bảo là những việc như tối ưu truy vấn thường xong đầu tiên trong khi điều này nên được hoàn thành thứ 2. Đầu tiên và cũng là quan trọng nhất là bạn nên chắc rằng bạn có 1 mô hình dữ liệu tốt trước khi cố gắng tối ưu hiệu suất. Và Knuth nói rằng:  
+> Tối ưu sớm là gốc rễ của mọi điều xấu.  
+
+**16. Sử dụng Database Transactions không chính xác**  
+Tất cả các dữ liệu thay đổi cho tiến trình riêng phải là nguyên tử. Ví dụ nếu như hoạt động thành công, nó cũng đầy đủ. Nếu như lỗi, dữ liệu sẽ không thay đổi. Không nên có những thay đổi nửa chừng.  
+Lý tưởng thì cách tốt nhất để đạt được điều này là thiết kế toàn bộ hệ thống nên cố gắng hỗ trợ toàn bộ thay đổi dữ liệu qua từng câu lệnh INSERT/UPDATE/DELETE đơn. Trong trường hợp này, không có xử lý transaction đặc biệt nào cần thiết cả, vì động cơ cơ sở dữ liệu  của bạn nên làm điều này tự động.  
+Tuy nhiên, nếu bất kỳ tiến trình nào yêu cầ nhiều câu lệnh được thực hiện như là đơn vị để giữ dữ liệu ở trạng thái thích hợp, khi đó, Transaction Control thích hợp là cần thiết.  
+* Bắt đầu Database Transactions trước statement đầu tiên  
+* Cam kết Transaction sau statement cuối cùng  
+* Khi có bất kỳ lỗi nào, tiến hành Rollback Transaction. Và bất kỳ NB nào! Đừng quên bỏ qua/ dừng tất cả các câu lệnh sau các lỗi.  
+Cũng nên chú ý cẩn thận đến các subtelties của lớp kết nối cơ sở dữ liệu của bạn, và động cơ cơ sở dữ liệu tương tác trong vấn đề này  
+**17. Không hiểu mô hình 'set-based'**  
+Ngôn ngữ SQL tuân theo mô hình cụ thể phù hợp với kiểu cụ thể của vấn đề. Mặc dù có nhiều phần mở rộng cung cấp cụ thể, cuộc đấu tranh ngôn ngữ để giải quyết vấn đề này là không đáng kể trong ngôn ngữ như Java, C#, Delphi, v.v..  
+Phần còn lại được biểu hiện trong 1 vài cách:  
+* Áp đặt quá nhiều các phương pháp và logic bắt buộc không phù hợp trên cơ sở dữ liệu  
+* Sử dụng con trỏ không phù hợp hoặc 1 cách quá đáng. Đặc biệt khi câu truy vấn đơn đầy đủ.  
+* Giả định sai rằng trigger thực hiện ngay khi mỗi dòng bị ảnh hưởng trong cập nhiều đa-dòng  
+Xác định phân chia trách nhiệm rõ ràng và cố gắng sử dụng công cụ thích hợp để giải quyết từng vấn đề.
